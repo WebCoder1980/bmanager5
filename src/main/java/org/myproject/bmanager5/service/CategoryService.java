@@ -3,14 +3,13 @@ package org.myproject.bmanager5.service;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.myproject.bmanager5.converter.ModelDTOConverter;
+import org.myproject.bmanager5.converter.PageableConverter;
 import org.myproject.bmanager5.dto.response.CategoryDTO;
 import org.myproject.bmanager5.dto.response.CategoryWithPathDTO;
 import org.myproject.bmanager5.dto.response.PathDTO;
 import org.myproject.bmanager5.model.CategoryModel;
 import org.myproject.bmanager5.repository.CategoryRepository;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,14 +19,10 @@ import java.util.List;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final ModelDTOConverter modelDTOConverter;
+    private final PageableConverter pageableConverter;
 
-    public List<CategoryDTO> getAll(Integer start, Integer size, String sortBy, Boolean isAscending) {
-        Sort sort = Sort.by(sortBy);
-        if (!isAscending) {
-            sort = sort.descending();
-        }
-
-        Pageable pageable = PageRequest.of(start, size, sort);
+    public List<CategoryDTO> getAll(Integer start, Integer size, String sortBy, String sortDirection) {
+        Pageable pageable = pageableConverter.toPageable(start, size, sortBy, sortDirection);
 
         return categoryRepository.findAll(pageable)
                 .stream()
@@ -41,16 +36,10 @@ public class CategoryService {
         );
     }
 
-    public List<CategoryWithPathDTO> getAllWithPath(Integer start, Integer size, String sortBy, Boolean isAscending) {
-        Sort sort = Sort.by(sortBy);
-        if (!isAscending) {
-            sort = sort.descending();
-        }
-
-
+    public List<CategoryWithPathDTO> getAllWithPath(Integer start, Integer size, String sortBy, String sortDirection) {
         List<PathDTO> paths = categoryRepository.findAllWithPath();
 
-        Pageable pageable = PageRequest.of(start, size, sort);
+        Pageable pageable = pageableConverter.toPageable(start, size, sortBy, sortDirection);
 
         return categoryRepository.findAll(pageable)
                 .stream()

@@ -22,10 +22,10 @@ public class CategoryController {
             @RequestParam(defaultValue = ""+0) Integer start,
             @RequestParam(defaultValue = ""+Integer.MAX_VALUE) Integer size,
             @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "true") Boolean isAscending
+            @RequestParam(defaultValue = "asc") String sortDirection
     ) {
         return ResponseEntity.ok()
-                .body(new AppResponse<>(categoryService.getAll(start, size, sortBy, isAscending)));
+                .body(new AppResponse<>(categoryService.getAll(start, size, sortBy, sortDirection)));
     }
 
     @GetMapping("/{id}")
@@ -39,10 +39,10 @@ public class CategoryController {
             @RequestParam(defaultValue = ""+0) Integer start,
             @RequestParam(defaultValue = ""+Integer.MAX_VALUE) Integer size,
             @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "true") Boolean isAscending
+            @RequestParam(defaultValue = "asc") String sortDirection
     ) {
         return ResponseEntity.ok()
-                .body(new AppResponse<>(categoryService.getAllWithPath(start, size, sortBy, isAscending)));
+                .body(new AppResponse<>(categoryService.getAllWithPath(start, size, sortBy, sortDirection)));
     }
 
     @PostMapping
