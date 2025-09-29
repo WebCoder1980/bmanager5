@@ -2,11 +2,14 @@ package org.myproject.bmanager5.converter;
 
 import lombok.AllArgsConstructor;
 import org.myproject.bmanager5.dto.response.CategoryDTO;
+import org.myproject.bmanager5.dto.response.CategoryWithPathDTO;
+import org.myproject.bmanager5.dto.response.PathDTO;
 import org.myproject.bmanager5.model.CategoryModel;
 import org.myproject.bmanager5.repository.CategoryRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -15,15 +18,16 @@ public class ModelDTOConverter {
     private final CategoryRepository categoryRepository;
 
     public CategoryDTO categoryModelToDTO(CategoryModel model) {
-        return new CategoryDTO()
-                .setId(model.getId())
-                .setName(model.getName())
-                .setParentsId(
+        return CategoryDTO.builder()
+                .id(model.getId())
+                .name(model.getName())
+                .parentsId(
                         model.getParents()
                                 .stream()
                                 .map(CategoryModel::getId)
                                 .collect(Collectors.toSet())
-                );
+                )
+                .build();
     }
 
     public CategoryModel categoryDTOToModel(CategoryDTO dto) {
@@ -36,5 +40,16 @@ public class ModelDTOConverter {
                                 .map(i -> categoryRepository.findById(i).orElseThrow())
                                 .toList()
                 ));
+    }
+
+    public CategoryWithPathDTO categoryDTOToCategoryWithPathDTO(CategoryDTO source, List<PathDTO> paths) {
+        return CategoryWithPathDTO.builder()
+                .id(source.getId())
+                .name(source.getName())
+                .parentsId(source.getParentsId())
+                .paths(paths.stream()
+                        .map(PathDTO::getFullPath)
+                        .toList())
+                .build();
     }
 }

@@ -3,18 +3,16 @@ package org.myproject.bmanager5.dto.response;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class CategoryDTO {
-    protected Long id;
-
-    protected String name;
-
-    protected Set<Long> parentsId;
+public class CategoryWithPathDTO extends CategoryDTO {
+    @Setter
+    private List<String> paths;
 }

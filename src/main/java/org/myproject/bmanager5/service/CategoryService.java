@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.myproject.bmanager5.converter.ModelDTOConverter;
 import org.myproject.bmanager5.dto.response.CategoryDTO;
+import org.myproject.bmanager5.dto.response.CategoryWithPathDTO;
+import org.myproject.bmanager5.dto.response.PathDTO;
 import org.myproject.bmanager5.model.CategoryModel;
 import org.myproject.bmanager5.repository.CategoryRepository;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +39,28 @@ public class CategoryService {
         return modelDTOConverter.categoryModelToDTO(
                 categoryRepository.findById(id).orElseThrow()
         );
+    }
+
+    public List<CategoryWithPathDTO> getAllWithPath(Integer start, Integer size, String sortBy, Boolean isAscending) {
+        Sort sort = Sort.by(sortBy);
+        if (!isAscending) {
+            sort = sort.descending();
+        }
+
+
+        List<PathDTO> paths = categoryRepository.findAllWithPath();
+
+        Pageable pageable = PageRequest.of(start, size, sort);
+
+        return categoryRepository.findAll(pageable)
+                .stream()
+                .map(i -> modelDTOConverter.categoryDTOToCategoryWithPathDTO(
+                        modelDTOConverter.categoryModelToDTO(i),
+                        paths.stream()
+                                .filter(j -> j.getId().equals(i.getId()))
+                                .toList()
+                ))
+                .toList();
     }
 
     public CategoryDTO create(CategoryDTO dto) {

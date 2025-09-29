@@ -5,16 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.util.Set;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class CategoryDTO {
-    protected Long id;
+public class PathDTO {
+    private Long id;
 
-    protected String name;
-
-    protected Set<Long> parentsId;
+    private String fullPath;
 }
