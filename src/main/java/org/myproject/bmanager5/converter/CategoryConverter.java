@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
-public class ModelDTOConverter {
+public class CategoryConverter {
     private final CategoryRepository categoryRepository;
 
-    public CategoryDTO categoryModelToDTO(CategoryModel model) {
+    public CategoryDTO modelToDTO(CategoryModel model) {
         return CategoryDTO.builder()
                 .id(model.getId())
                 .name(model.getName())
@@ -30,7 +30,7 @@ public class ModelDTOConverter {
                 .build();
     }
 
-    public CategoryModel categoryDTOToModel(CategoryDTO dto) {
+    public CategoryModel dtoToModel(CategoryDTO dto) {
         return new CategoryModel()
                 .setId(dto.getId())
                 .setName(dto.getName())
@@ -42,7 +42,7 @@ public class ModelDTOConverter {
                 ));
     }
 
-    public CategoryWithPathDTO categoryDTOToCategoryWithPathDTO(CategoryDTO source, List<PathDTO> paths) {
+    public CategoryWithPathDTO dtoToWithPathDTO(CategoryDTO source, List<PathDTO> paths) {
         return CategoryWithPathDTO.builder()
                 .id(source.getId())
                 .name(source.getName())

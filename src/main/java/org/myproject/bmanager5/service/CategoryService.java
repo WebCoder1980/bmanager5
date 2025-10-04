@@ -2,7 +2,7 @@ package org.myproject.bmanager5.service;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import org.myproject.bmanager5.converter.ModelDTOConverter;
+import org.myproject.bmanager5.converter.CategoryConverter;
 import org.myproject.bmanager5.converter.PageableConverter;
 import org.myproject.bmanager5.dto.response.CategoryDTO;
 import org.myproject.bmanager5.dto.response.CategoryWithPathDTO;
@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
-    private final ModelDTOConverter modelDTOConverter;
+    private final CategoryConverter categoryConverter;
     private final PageableConverter pageableConverter;
 
     public List<CategoryDTO> getAll(Integer start, Integer size, String sortBy, String sortDirection) {
@@ -26,12 +26,12 @@ public class CategoryService {
 
         return categoryRepository.findAll(pageable)
                 .stream()
-                .map(modelDTOConverter::categoryModelToDTO)
+                .map(categoryConverter::modelToDTO)
                 .toList();
     }
 
     public CategoryDTO get(@NotNull Long id) {
-        return modelDTOConverter.categoryModelToDTO(
+        return categoryConverter.modelToDTO(
                 categoryRepository.findById(id).orElseThrow()
         );
     }
@@ -43,8 +43,8 @@ public class CategoryService {
 
         return categoryRepository.findAll(pageable)
                 .stream()
-                .map(i -> modelDTOConverter.categoryDTOToCategoryWithPathDTO(
-                        modelDTOConverter.categoryModelToDTO(i),
+                .map(i -> categoryConverter.dtoToWithPathDTO(
+                        categoryConverter.modelToDTO(i),
                         paths.stream()
                                 .filter(j -> j.getId().equals(i.getId()))
                                 .toList()
@@ -53,9 +53,9 @@ public class CategoryService {
     }
 
     public CategoryDTO create(CategoryDTO dto) {
-        CategoryModel model = modelDTOConverter.categoryDTOToModel(dto);
+        CategoryModel model = categoryConverter.dtoToModel(dto);
         categoryRepository.save(model);
-        return modelDTOConverter.categoryModelToDTO(model);
+        return categoryConverter.modelToDTO(model);
     }
 
     public CategoryDTO update(@NotNull Long id, CategoryDTO dto) {
@@ -75,6 +75,6 @@ public class CategoryService {
 
         categoryRepository.save(model);
 
-        return modelDTOConverter.categoryModelToDTO(model);
+        return categoryConverter.modelToDTO(model);
     }
 }
