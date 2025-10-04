@@ -47,6 +47,12 @@ public class CategoryConverter {
                                 .stream()
                                 .map(i -> categoryRepository.findById(i).orElseThrow())
                                 .toList()
+                ))
+                .setChildren(new ArrayList<>(
+                        dto.getChildrenId()
+                                .stream()
+                                .map(i -> categoryRepository.findById(i).orElseThrow())
+                                .toList()
                 ));
     }
 
