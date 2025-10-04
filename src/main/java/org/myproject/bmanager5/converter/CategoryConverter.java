@@ -2,7 +2,7 @@ package org.myproject.bmanager5.converter;
 
 import lombok.AllArgsConstructor;
 import org.myproject.bmanager5.dto.response.CategoryDTO;
-import org.myproject.bmanager5.dto.response.CategoryWithPathDTO;
+import org.myproject.bmanager5.dto.viewdto.CategoryViewDTO;
 import org.myproject.bmanager5.dto.response.PathDTO;
 import org.myproject.bmanager5.model.CategoryModel;
 import org.myproject.bmanager5.repository.CategoryRepository;
@@ -42,8 +42,8 @@ public class CategoryConverter {
                 ));
     }
 
-    public CategoryWithPathDTO dtoToWithPathDTO(CategoryDTO source, List<PathDTO> paths) {
-        return CategoryWithPathDTO.builder()
+    public CategoryViewDTO dtoToViewDTO(CategoryDTO source, List<PathDTO> paths) {
+        return CategoryViewDTO.builder()
                 .id(source.getId())
                 .name(source.getName())
                 .parentsId(source.getParentsId())

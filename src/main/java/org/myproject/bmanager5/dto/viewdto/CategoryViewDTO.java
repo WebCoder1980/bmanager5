@@ -1,10 +1,11 @@
-package org.myproject.bmanager5.dto.response;
+package org.myproject.bmanager5.dto.viewdto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.myproject.bmanager5.dto.response.CategoryDTO;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class CategoryWithPathDTO extends CategoryDTO {
+public class CategoryViewDTO extends CategoryDTO {
     @Setter
     private List<String> paths;
 }

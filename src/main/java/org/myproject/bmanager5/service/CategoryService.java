@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import org.myproject.bmanager5.converter.CategoryConverter;
 import org.myproject.bmanager5.converter.PageableConverter;
 import org.myproject.bmanager5.dto.response.CategoryDTO;
-import org.myproject.bmanager5.dto.response.CategoryWithPathDTO;
+import org.myproject.bmanager5.dto.viewdto.CategoryViewDTO;
 import org.myproject.bmanager5.dto.response.PathDTO;
 import org.myproject.bmanager5.model.CategoryModel;
 import org.myproject.bmanager5.repository.CategoryRepository;
@@ -36,14 +36,14 @@ public class CategoryService {
         );
     }
 
-    public List<CategoryWithPathDTO> getAllWithPath(Integer start, Integer size, String sortBy, String sortDirection) {
+    public List<CategoryViewDTO> getAllWithPath(Integer start, Integer size, String sortBy, String sortDirection) {
         List<PathDTO> paths = categoryRepository.findAllWithPath();
 
         Pageable pageable = pageableConverter.toPageable(start, size, sortBy, sortDirection);
 
         return categoryRepository.findAll(pageable)
                 .stream()
-                .map(i -> categoryConverter.dtoToWithPathDTO(
+                .map(i -> categoryConverter.dtoToViewDTO(
                         categoryConverter.modelToDTO(i),
                         paths.stream()
                                 .filter(j -> j.getId().equals(i.getId()))
