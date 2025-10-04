@@ -17,4 +17,6 @@ public class CategoryDTO {
     protected String name;
 
     protected Set<Long> parentsId;
+
+    protected Set<Long> childrenId;
 }

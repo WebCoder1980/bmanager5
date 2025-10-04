@@ -2,14 +2,16 @@ package org.myproject.bmanager5.converter;
 
 import lombok.AllArgsConstructor;
 import org.myproject.bmanager5.dto.response.CategoryDTO;
+import org.myproject.bmanager5.dto.tmpdto.CategoryTmpDTO;
 import org.myproject.bmanager5.dto.viewdto.CategoryViewDTO;
-import org.myproject.bmanager5.dto.response.PathDTO;
 import org.myproject.bmanager5.model.CategoryModel;
 import org.myproject.bmanager5.repository.CategoryRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -23,6 +25,12 @@ public class CategoryConverter {
                 .name(model.getName())
                 .parentsId(
                         model.getParents()
+                                .stream()
+                                .map(CategoryModel::getId)
+                                .collect(Collectors.toSet())
+                )
+                .childrenId(
+                        model.getChildren()
                                 .stream()
                                 .map(CategoryModel::getId)
                                 .collect(Collectors.toSet())
@@ -42,14 +50,21 @@ public class CategoryConverter {
                 ));
     }
 
-    public CategoryViewDTO dtoToViewDTO(CategoryDTO source, List<PathDTO> paths) {
+    public CategoryViewDTO tmpDTOToViewDTO(CategoryTmpDTO source) {
         return CategoryViewDTO.builder()
                 .id(source.getId())
                 .name(source.getName())
-                .parentsId(source.getParentsId())
-                .paths(paths.stream()
-                        .map(PathDTO::getFullPath)
-                        .toList())
+                .parentsId(
+                        Optional.ofNullable(source.getParentsIdArray())
+                                .map(i -> Arrays.stream(i).collect(Collectors.toSet()))
+                                .orElse(Set.of())
+                )
+                .childrenId(
+                        Optional.ofNullable(source.getChildrenIdArray())
+                                .map(i -> Arrays.stream(i).collect(Collectors.toSet()))
+                                .orElse(Set.of())
+                )
+                .path(source.getPath())
                 .build();
     }
 }

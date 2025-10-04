@@ -36,13 +36,14 @@ public class CategoryController {
 
     @GetMapping("/withFullPath")
     public ResponseEntity<AppResponse<List<CategoryViewDTO>>> getAllWithFullPath(
+            @RequestParam(defaultValue = ""+1) Long rootId,
             @RequestParam(defaultValue = ""+0) Integer start,
             @RequestParam(defaultValue = ""+Integer.MAX_VALUE) Integer size,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDirection
     ) {
         return ResponseEntity.ok()
-                .body(new AppResponse<>(categoryService.getAllWithPath(start, size, sortBy, sortDirection)));
+                .body(new AppResponse<>(categoryService.getAllWithPath(rootId, start, size, sortBy, sortDirection)));
     }
 
     @PostMapping

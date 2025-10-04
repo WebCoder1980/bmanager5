@@ -29,5 +29,5 @@ public class CategoryModel {
     private List<CategoryModel> parents = new ArrayList<>();
 
     @ManyToMany(mappedBy = "parents")
-    private List<CategoryModel> childs = new ArrayList<>();
+    private List<CategoryModel> children = new ArrayList<>();
 }

@@ -4,9 +4,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.myproject.bmanager5.converter.CategoryConverter;
 import org.myproject.bmanager5.converter.PageableConverter;
+import org.myproject.bmanager5.dao.CategoryDAO;
 import org.myproject.bmanager5.dto.response.CategoryDTO;
 import org.myproject.bmanager5.dto.viewdto.CategoryViewDTO;
-import org.myproject.bmanager5.dto.response.PathDTO;
 import org.myproject.bmanager5.model.CategoryModel;
 import org.myproject.bmanager5.repository.CategoryRepository;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +20,7 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryConverter categoryConverter;
     private final PageableConverter pageableConverter;
+    private final CategoryDAO categoryDAO;
 
     public List<CategoryDTO> getAll(Integer start, Integer size, String sortBy, String sortDirection) {
         Pageable pageable = pageableConverter.toPageable(start, size, sortBy, sortDirection);
@@ -36,19 +37,12 @@ public class CategoryService {
         );
     }
 
-    public List<CategoryViewDTO> getAllWithPath(Integer start, Integer size, String sortBy, String sortDirection) {
-        List<PathDTO> paths = categoryRepository.findAllWithPath();
+    public List<CategoryViewDTO> getAllWithPath(Long rootId, Integer start, Integer size, String sortBy, String sortDirection) {
+        Pageable pageable = pageableConverter.toPageable(start, size, sortBy, sortDirection); // tmp404
 
-        Pageable pageable = pageableConverter.toPageable(start, size, sortBy, sortDirection);
-
-        return categoryRepository.findAll(pageable)
+        return categoryDAO.findAllWithPath(rootId)
                 .stream()
-                .map(i -> categoryConverter.dtoToViewDTO(
-                        categoryConverter.modelToDTO(i),
-                        paths.stream()
-                                .filter(j -> j.getId().equals(i.getId()))
-                                .toList()
-                ))
+                .map(categoryConverter::tmpDTOToViewDTO)
                 .toList();
     }
 
