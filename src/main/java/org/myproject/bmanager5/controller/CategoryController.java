@@ -18,25 +18,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<AppResponse<List<CategoryDTO>>> getAll(
-            @RequestParam(defaultValue = ""+0) Integer pageStart,
-            @RequestParam(defaultValue = ""+Integer.MAX_VALUE) Integer pageSize,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDirection
-    ) {
-        return ResponseEntity.ok()
-                .body(new AppResponse<>(categoryService.getAll(pageStart, pageSize, sortBy, sortDirection)));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<AppResponse<CategoryDTO>> get(@PathVariable @NotNull Long id) {
-        return ResponseEntity.ok()
-                .body(new AppResponse<>(categoryService.get(id)));
-    }
-
-    @GetMapping("/withFullPath")
-    @Deprecated
-    public ResponseEntity<AppResponse<List<CategoryViewDTO>>> getAllWithFullPath(
+    public ResponseEntity<AppResponse<List<CategoryViewDTO>>> getAll(
             @RequestParam(defaultValue = ""+1) Long rootId,
             @RequestParam(defaultValue = ""+0) Integer pageStart,
             @RequestParam(defaultValue = ""+Integer.MAX_VALUE) Integer pageSize,
@@ -44,7 +26,13 @@ public class CategoryController {
             @RequestParam(defaultValue = "asc") String sortDirection
     ) {
         return ResponseEntity.ok()
-                .body(new AppResponse<>(categoryService.getAllWithPath(rootId, pageStart, pageSize, sortBy, sortDirection)));
+                .body(new AppResponse<>(categoryService.getAll(rootId, pageStart, pageSize, sortBy, sortDirection)));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AppResponse<CategoryDTO>> get(@PathVariable @NotNull Long id) {
+        return ResponseEntity.ok()
+                .body(new AppResponse<>(categoryService.get(id)));
     }
 
     @PostMapping
