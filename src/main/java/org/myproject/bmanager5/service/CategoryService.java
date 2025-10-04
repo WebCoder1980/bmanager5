@@ -9,6 +9,7 @@ import org.myproject.bmanager5.dto.response.CategoryDTO;
 import org.myproject.bmanager5.dto.viewdto.CategoryViewDTO;
 import org.myproject.bmanager5.model.CategoryModel;
 import org.myproject.bmanager5.repository.CategoryRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,18 +22,17 @@ public class CategoryService {
     private final PageableConverter pageableConverter;
     private final CategoryDAO categoryDAO;
 
-    public List<CategoryViewDTO> getAll(
-            Long rootId,
+    public List<CategoryDTO> getAll(
             Integer pageStart,
             Integer pageSize,
             String sortBy,
             String sortDirection
     ) {
-        String pageable = pageableConverter.toSQL(pageStart, pageSize, sortBy, sortDirection);
+        Pageable pageable = pageableConverter.toPageable(pageStart, pageSize, sortBy, sortDirection);
 
-        return categoryDAO.findAllWithPath(rootId, pageable)
+        return categoryRepository.findAll(pageable)
                 .stream()
-                .map(categoryConverter::tmpDTOToViewDTO)
+                .map(categoryConverter::modelToDTO)
                 .toList();
     }
 
@@ -40,6 +40,22 @@ public class CategoryService {
         return categoryConverter.modelToDTO(
                 categoryRepository.findById(id).orElseThrow()
         );
+    }
+
+    @Deprecated
+    public List<CategoryViewDTO> getAllWithPath(
+            Long rootId,
+            Integer start,
+            Integer size,
+            String sortBy,
+            String sortDirection
+    ) {
+        String pageable = pageableConverter.toSQL(start, size, sortBy, sortDirection);
+
+        return categoryDAO.findAllWithPath(rootId, pageable)
+                .stream()
+                .map(categoryConverter::tmpDTOToViewDTO)
+                .toList();
     }
 
     public CategoryDTO create(CategoryDTO dto) {
