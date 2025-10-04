@@ -7,7 +7,7 @@ import lombok.SneakyThrows;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.transform.Transformers;
 import org.myproject.bmanager5.dto.tmpdto.CategoryTmpDTO;
-import org.myproject.bmanager5.service.AppFileReader;
+import org.myproject.bmanager5.service.AppDAO;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,14 +15,17 @@ import java.util.List;
 @Component
 @AllArgsConstructor
 public class CategoryDAO {
-    private final AppFileReader appFileReader;
+    private final AppDAO appDAO;
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @SneakyThrows
-    public List<CategoryTmpDTO> findAllWithPath(Long rootId) {
-        final String queryStr = appFileReader.getSQL("category/select-children.sql");
+    public List<CategoryTmpDTO> findAllWithPath(Long rootId, String pageable) {
+        final String queryStr = appDAO.getSQL(
+                "sql/category/select-children.sql",
+                pageable
+        );
 
         @SuppressWarnings({"unchecked", "deprecation"})
         NativeQuery<CategoryTmpDTO> query = entityManager.createNativeQuery(queryStr)

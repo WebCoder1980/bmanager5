@@ -15,4 +15,16 @@ public class PageableConverter {
 
         return PageRequest.of(start, size, sort);
     }
+
+    public String toSQL(Integer pageId, Integer pageSize, String sortBy, String sortDirection) {
+        final Long limit = (long) pageSize;
+        final Long offset = (long)pageId*pageSize;
+
+        StringBuilder result = new StringBuilder();
+
+        result.append(String.format("ORDER BY %s %s\n", sortBy, sortDirection));
+        result.append(String.format("LIMIT %d OFFSET %d", limit, offset));
+
+        return result.toString();
+    }
 }

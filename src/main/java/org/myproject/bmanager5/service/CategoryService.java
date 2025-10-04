@@ -22,8 +22,13 @@ public class CategoryService {
     private final PageableConverter pageableConverter;
     private final CategoryDAO categoryDAO;
 
-    public List<CategoryDTO> getAll(Integer start, Integer size, String sortBy, String sortDirection) {
-        Pageable pageable = pageableConverter.toPageable(start, size, sortBy, sortDirection);
+    public List<CategoryDTO> getAll(
+            Integer pageStart,
+            Integer pageSize,
+            String sortBy,
+            String sortDirection
+    ) {
+        Pageable pageable = pageableConverter.toPageable(pageStart, pageSize, sortBy, sortDirection);
 
         return categoryRepository.findAll(pageable)
                 .stream()
@@ -37,10 +42,17 @@ public class CategoryService {
         );
     }
 
-    public List<CategoryViewDTO> getAllWithPath(Long rootId, Integer start, Integer size, String sortBy, String sortDirection) {
-        Pageable pageable = pageableConverter.toPageable(start, size, sortBy, sortDirection); // tmp404
+    @Deprecated
+    public List<CategoryViewDTO> getAllWithPath(
+            Long rootId,
+            Integer start,
+            Integer size,
+            String sortBy,
+            String sortDirection
+    ) {
+        String pageable = pageableConverter.toSQL(start, size, sortBy, sortDirection);
 
-        return categoryDAO.findAllWithPath(rootId)
+        return categoryDAO.findAllWithPath(rootId, pageable)
                 .stream()
                 .map(categoryConverter::tmpDTOToViewDTO)
                 .toList();
