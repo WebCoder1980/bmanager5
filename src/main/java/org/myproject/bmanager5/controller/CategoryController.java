@@ -52,7 +52,7 @@ public class CategoryController {
                 .body(new AppResponse<>(categoryService.create(dto)));
     }
 
-    @PutMapping
+    @PutMapping("{id}")
     public ResponseEntity<AppResponse<CategoryDTO>> update(
             @PathVariable @NotNull Long id,
             @RequestBody CategoryDTO dto
