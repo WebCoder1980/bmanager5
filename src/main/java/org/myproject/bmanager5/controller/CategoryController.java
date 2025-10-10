@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.myproject.bmanager5.dto.response.AppResponse;
 import org.myproject.bmanager5.dto.response.CategoryDTO;
-import org.myproject.bmanager5.dto.viewdto.CategoryViewDTO;
 import org.myproject.bmanager5.service.CategoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,19 +31,6 @@ public class CategoryController {
     public ResponseEntity<AppResponse<CategoryDTO>> get(@PathVariable @NotNull Long id) {
         return ResponseEntity.ok()
                 .body(new AppResponse<>(categoryService.get(id)));
-    }
-
-    @GetMapping("/withFullPath")
-    @Deprecated
-    public ResponseEntity<AppResponse<List<CategoryViewDTO>>> getAllWithFullPath(
-            @RequestParam(defaultValue = ""+1) Long rootId,
-            @RequestParam(defaultValue = ""+0) Integer pageStart,
-            @RequestParam(defaultValue = ""+Integer.MAX_VALUE) Integer pageSize,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDirection
-    ) {
-        return ResponseEntity.ok()
-                .body(new AppResponse<>(categoryService.getAllWithPath(rootId, pageStart, pageSize, sortBy, sortDirection)));
     }
 
     @PostMapping

@@ -1,9 +1,11 @@
 package org.myproject.bmanager5.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +14,14 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Accessors(chain = true)
+@SuperBuilder
 public class CategoryModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    protected Long id;
 
     @Column(nullable = false)
-    private String name;
+    protected String name;
 
     @ManyToMany
     @JoinTable(
@@ -26,8 +29,10 @@ public class CategoryModel {
             joinColumns = @JoinColumn(name = "child_id"),
             inverseJoinColumns = @JoinColumn(name = "parent_id")
     )
-    private List<CategoryModel> parents = new ArrayList<>();
+    @JsonIgnore
+    protected List<CategoryModel> parents = new ArrayList<>();
 
     @ManyToMany(mappedBy = "parents")
-    private List<CategoryModel> children = new ArrayList<>();
+    @JsonIgnore
+    protected List<CategoryModel> children = new ArrayList<>();
 }

@@ -4,9 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.myproject.bmanager5.converter.CategoryConverter;
 import org.myproject.bmanager5.converter.PageableConverter;
-import org.myproject.bmanager5.dao.CategoryDAO;
 import org.myproject.bmanager5.dto.response.CategoryDTO;
-import org.myproject.bmanager5.dto.viewdto.CategoryViewDTO;
 import org.myproject.bmanager5.model.CategoryModel;
 import org.myproject.bmanager5.repository.CategoryRepository;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +18,6 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryConverter categoryConverter;
     private final PageableConverter pageableConverter;
-    private final CategoryDAO categoryDAO;
 
     public List<CategoryDTO> getAll(
             Integer pageStart,
@@ -40,22 +37,6 @@ public class CategoryService {
         return categoryConverter.modelToDTO(
                 categoryRepository.findById(id).orElseThrow()
         );
-    }
-
-    @Deprecated
-    public List<CategoryViewDTO> getAllWithPath(
-            Long rootId,
-            Integer start,
-            Integer size,
-            String sortBy,
-            String sortDirection
-    ) {
-        String pageable = pageableConverter.toSQL(start, size, sortBy, sortDirection);
-
-        return categoryDAO.findAllWithPath(rootId, pageable)
-                .stream()
-                .map(categoryConverter::tmpDTOToViewDTO)
-                .toList();
     }
 
     public CategoryDTO create(CategoryDTO dto) {
