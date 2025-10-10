@@ -6,7 +6,7 @@ import org.myproject.bmanager5.model.CategoryModel;
 import org.myproject.bmanager5.repository.CategoryRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @Component
@@ -37,17 +37,17 @@ public class CategoryConverter {
         return new CategoryModel()
                 .setId(dto.getId())
                 .setName(dto.getName())
-                .setParents(new ArrayList<>(
+                .setParents(new HashSet<>(
                         dto.getParentsId()
                                 .stream()
                                 .map(i -> categoryRepository.findById(i).orElseThrow())
-                                .toList()
+                                .collect(Collectors.toSet())
                 ))
-                .setChildren(new ArrayList<>(
+                .setChildren(new HashSet<>(
                         dto.getChildrenId()
                                 .stream()
                                 .map(i -> categoryRepository.findById(i).orElseThrow())
-                                .toList()
+                                .collect(Collectors.toSet())
                 ));
     }
 }

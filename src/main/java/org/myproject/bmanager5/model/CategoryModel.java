@@ -3,12 +3,13 @@ package org.myproject.bmanager5.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity(name = "category")
 @Data
@@ -30,9 +31,11 @@ public class CategoryModel {
             inverseJoinColumns = @JoinColumn(name = "parent_id")
     )
     @JsonIgnore
-    protected List<CategoryModel> parents = new ArrayList<>();
+    @EqualsAndHashCode.Exclude
+    protected Set<CategoryModel> parents = new HashSet<>();
 
     @ManyToMany(mappedBy = "parents")
     @JsonIgnore
-    protected List<CategoryModel> children = new ArrayList<>();
+    @EqualsAndHashCode.Exclude
+    protected Set<CategoryModel> children = new HashSet<>();
 }

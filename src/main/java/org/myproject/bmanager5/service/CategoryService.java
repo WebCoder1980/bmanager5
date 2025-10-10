@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -56,7 +57,7 @@ public class CategoryService {
                     dto.getParentsId()
                             .stream()
                             .map(i -> categoryRepository.findById(i).orElseThrow())
-                            .toList()
+                            .collect(Collectors.toSet())
             );
         }
 

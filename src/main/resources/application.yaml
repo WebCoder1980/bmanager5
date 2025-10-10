@@ -9,6 +9,8 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
+#        format_sql: true
+#    show-sql: true
     open-in-view: true
   datasource:
     driver-class-name: org.postgresql.Driver
