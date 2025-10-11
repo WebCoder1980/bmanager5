@@ -58,6 +58,14 @@ public class CategoryService {
                             .collect(Collectors.toSet())
             );
         }
+        if (dto.getChildrenId() != null) {
+            model.setChildren(
+                    dto.getChildrenId()
+                            .stream()
+                            .map(i -> categoryRepository.findById(i).orElseThrow())
+                            .collect(Collectors.toSet())
+            );
+        }
 
         categoryRepository.save(model);
 
