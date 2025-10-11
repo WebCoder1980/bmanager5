@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import org.myproject.bmanager5.converter.CategoryConverter;
 import org.myproject.bmanager5.converter.SearchRequestConverter;
 import org.myproject.bmanager5.dto.request.SearchRequest;
-import org.myproject.bmanager5.dto.response.CategoryDTO;
 import org.myproject.bmanager5.model.CategoryModel;
 import org.myproject.bmanager5.repository.CategoryRepository;
 import org.springframework.data.domain.Pageable;
@@ -21,37 +20,50 @@ public class CategoryService {
     private final CategoryConverter categoryConverter;
     private final SearchRequestConverter searchRequestConverter;
 
-    public List<CategoryDTO> search(SearchRequest request) {
+    public List<CategoryModel> search(SearchRequest request) {
         Pageable pageable = searchRequestConverter.getPageable(request);
         Specification<CategoryModel> specification = searchRequestConverter.getSpecification(request);
 
-        return categoryRepository.findAll(specification, pageable)
-                .stream()
-                .map(categoryConverter::modelToDTO)
+        List<CategoryModel> result = categoryRepository.findAll(specification, pageable).getContent();
+
+        result = result.stream()
+                .map(categoryConverter::fillIdIndexes)
                 .toList();
+
+        return result;
     }
 
-    public CategoryDTO get(@NotNull Long id) {
-        return categoryConverter.modelToDTO(
+    public CategoryModel get(@NotNull Long id) {
+        return categoryConverter.fillIdIndexes(
                 categoryRepository.findById(id).orElseThrow()
         );
     }
 
-    public CategoryDTO create(CategoryDTO dto) {
-        CategoryModel model = categoryConverter.dtoToModel(dto);
-        categoryRepository.save(model);
-        return categoryConverter.modelToDTO(model);
+    public CategoryModel create(CategoryModel source) {
+        categoryConverter.fillIdObjectes(source);
+
+        categoryRepository.save(source);
+
+        source = categoryRepository.findById(source.getId()).orElseThrow();
+
+        categoryConverter.fillIdIndexes(source);
+
+        return source;
     }
 
-    public CategoryDTO update(@NotNull Long id, CategoryDTO dto) {
+    public CategoryModel update(@NotNull Long id, CategoryModel source) {
         CategoryModel model = categoryRepository.findById(id).orElseThrow();
 
-        categoryConverter.enrichModel(model, dto);
+        categoryConverter.updateModel(model, source);
+
+        categoryConverter.fillIdObjectes(model);
 
         categoryRepository.save(model);
 
         model = categoryRepository.findById(id).orElseThrow();
 
-        return categoryConverter.modelToDTO(model);
+        categoryConverter.fillIdIndexes(model);
+
+        return model;
     }
 }

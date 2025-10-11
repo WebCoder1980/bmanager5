@@ -11,6 +11,8 @@ import lombok.experimental.SuperBuilder;
 import java.util.HashSet;
 import java.util.Set;
 
+import static jakarta.persistence.CascadeType.ALL;
+
 @Entity(name = "category")
 @Data
 @NoArgsConstructor
@@ -24,7 +26,7 @@ public class CategoryModel {
     @Column(nullable = false)
     protected String name;
 
-    @ManyToMany
+    @ManyToMany(cascade = ALL)
     @JoinTable(
             name = "category_hierarchy",
             joinColumns = @JoinColumn(name = "child_id"),
@@ -34,7 +36,7 @@ public class CategoryModel {
     @EqualsAndHashCode.Exclude
     protected Set<CategoryModel> parents = new HashSet<>();
 
-    @ManyToMany(mappedBy = "parents")
+    @ManyToMany(mappedBy = "parents", cascade = ALL)
     @JsonIgnore
     @EqualsAndHashCode.Exclude
     protected Set<CategoryModel> children = new HashSet<>();
@@ -45,4 +47,12 @@ public class CategoryModel {
         }
         getChildren().clear();
     }
+
+    // For Rest API
+
+    @Transient
+    protected Set<Long> parentsId;
+
+    @Transient
+    protected Set<Long> childrenId;
 }

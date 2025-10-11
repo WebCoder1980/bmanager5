@@ -1,7 +1,6 @@
 package org.myproject.bmanager5.converter;
 
 import lombok.AllArgsConstructor;
-import org.myproject.bmanager5.dto.response.CategoryDTO;
 import org.myproject.bmanager5.model.CategoryModel;
 import org.myproject.bmanager5.repository.CategoryRepository;
 import org.springframework.stereotype.Component;
@@ -14,70 +13,70 @@ import java.util.stream.Collectors;
 public class CategoryConverter {
     private final CategoryRepository categoryRepository;
 
-    public CategoryDTO modelToDTO(CategoryModel model) {
-        var builder = CategoryDTO.builder();
+    public CategoryModel fillIdIndexes(CategoryModel model) {
+        model.setParentsId(
+                model.getParents()
+                        .stream()
+                        .map(CategoryModel::getId)
+                        .collect(Collectors.toSet())
+        );
 
-        builder.id(model.getId())
-                .name(model.getName())
-                .parentsId(
-                        model.getParents()
-                                .stream()
-                                .map(CategoryModel::getId)
-                                .collect(Collectors.toSet())
-                )
-                .childrenId(
-                        model.getChildren()
-                                .stream()
-                                .map(CategoryModel::getId)
-                                .collect(Collectors.toSet())
-                );
+        model.setChildrenId(
+                model.getChildren()
+                        .stream()
+                        .map(CategoryModel::getId)
+                        .collect(Collectors.toSet())
+        );
 
-        return builder.build();
+        return model;
     }
 
-    public CategoryModel dtoToModel(CategoryDTO dto) {
-        var builder = CategoryModel.builder();
+    public CategoryModel fillIdObjectes(CategoryModel model) {
+        model.setParents(
+                model.getParentsId()
+                        .stream()
+                        .map(childId -> categoryRepository.findById(childId).orElseThrow())
+                        .collect(Collectors.toSet())
+        );
 
-        builder.id(dto.getId())
-                .name(dto.getName())
-                .parents(new HashSet<>(
-                        dto.getParentsId()
-                                .stream()
-                                .map(i -> categoryRepository.findById(i).orElseThrow())
-                                .collect(Collectors.toSet())
-                ))
-                .children(new HashSet<>(
-                        dto.getChildrenId()
-                                .stream()
-                                .map(i -> categoryRepository.findById(i).orElseThrow())
-                                .collect(Collectors.toSet())
-                ));
+        model.getChildrenId()
+                .stream()
+                .map(parentId -> categoryRepository.findById(parentId).orElseThrow())
+        .forEach(CategoryModel::clearChildren);
 
-        return builder.build();
+        model.clearChildren();
+
+        model.getChildrenId()
+                .stream()
+                .map(parentId -> categoryRepository.findById(parentId).orElseThrow())
+                .forEach(parent -> model.getChildren().add(parent));
+
+        model.getChildrenId()
+                .stream()
+                .map(parentId -> categoryRepository.findById(parentId).orElseThrow())
+                .forEach(parent -> parent.getParents().add(model));
+
+        return model;
     }
 
-    public void enrichModel(CategoryModel model, CategoryDTO dto) {
-        if (dto.getName() != null) {
-            model.setName(dto.getName());
+    public void updateModel(CategoryModel model, CategoryModel changesModel) {
+        if (changesModel.getName() != null) {
+            model.setName(changesModel.getName());
         }
 
-        if (dto.getParentsId() != null) {
-            model.setParents(
-                    dto.getParentsId()
-                            .stream()
-                            .map(i -> categoryRepository.findById(i).orElseThrow())
-                            .collect(Collectors.toSet())
+        if (changesModel.getParentsId() != null) {
+            model.setParentsId(
+                    changesModel.getParentsId()
             );
         }
 
-        if (dto.getChildrenId() != null) {
-            model.clearChildren();
+        if (changesModel.getChildrenId() != null) {
+            if (model.getChildrenId() == null) {
+                model.setChildrenId(new HashSet<>());
+            }
 
-            model.getChildren().addAll(
-                    dto.getChildrenId()
-                            .stream()
-                            .map(childId -> categoryRepository.findById(childId).orElseThrow())
-                            .collect(Collectors.toSet())
+            model.getChildrenId().addAll(
+                    changesModel.getChildrenId()
             );
         }
     }
