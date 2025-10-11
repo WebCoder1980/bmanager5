@@ -22,20 +22,6 @@ public class CategoryService {
     private final CategoryConverter categoryConverter;
     private final SearchRequestConverter searchRequestConverter;
 
-    public List<CategoryDTO> getAll(
-            Integer pageStart,
-            Integer pageSize,
-            String sortBy,
-            String sortDirection
-    ) {
-        Pageable pageable = searchRequestConverter.toPageable(pageStart, pageSize, sortBy, sortDirection);
-
-        return categoryRepository.findAll(pageable)
-                .stream()
-                .map(categoryConverter::modelToDTO)
-                .toList();
-    }
-
     public List<CategoryDTO> search(SearchRequest request) {
         Pageable pageable = searchRequestConverter.getPageable(request);
         Specification<CategoryModel> specification = searchRequestConverter.getSpecification(request);

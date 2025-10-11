@@ -17,18 +17,6 @@ import java.util.List;
 public class CategoryController {
     private final CategoryService categoryService;
 
-    @Deprecated
-    @GetMapping
-    public ResponseEntity<AppResponse<List<CategoryDTO>>> getAll(
-            @RequestParam(defaultValue = ""+0) Integer pageStart,
-            @RequestParam(defaultValue = ""+Integer.MAX_VALUE) Integer pageSize,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDirection
-    ) {
-        return ResponseEntity.ok()
-                .body(new AppResponse<>(categoryService.getAll(pageStart, pageSize, sortBy, sortDirection)));
-    }
-
     @PostMapping("/search")
     public ResponseEntity<AppResponse<List<CategoryDTO>>> search(@RequestBody SearchRequest body) {
         return ResponseEntity.ok()
