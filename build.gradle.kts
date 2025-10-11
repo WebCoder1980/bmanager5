@@ -33,6 +33,7 @@ dependencies {
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	implementation("io.github.perplexhub:rsql-jpa-spring-boot-starter:6.0.32")
 }
 
 tasks.withType<Test> {

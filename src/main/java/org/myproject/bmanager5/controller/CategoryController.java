@@ -2,6 +2,7 @@ package org.myproject.bmanager5.controller;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import org.myproject.bmanager5.dto.request.SearchRequest;
 import org.myproject.bmanager5.dto.response.AppResponse;
 import org.myproject.bmanager5.dto.response.CategoryDTO;
 import org.myproject.bmanager5.service.CategoryService;
@@ -16,6 +17,7 @@ import java.util.List;
 public class CategoryController {
     private final CategoryService categoryService;
 
+    @Deprecated
     @GetMapping
     public ResponseEntity<AppResponse<List<CategoryDTO>>> getAll(
             @RequestParam(defaultValue = ""+0) Integer pageStart,
@@ -25,6 +27,12 @@ public class CategoryController {
     ) {
         return ResponseEntity.ok()
                 .body(new AppResponse<>(categoryService.getAll(pageStart, pageSize, sortBy, sortDirection)));
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<AppResponse<List<CategoryDTO>>> search(@RequestBody SearchRequest body) {
+        return ResponseEntity.ok()
+                .body(new AppResponse<>(categoryService.search(body)));
     }
 
     @GetMapping("/{id}")
