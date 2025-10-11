@@ -31,7 +31,7 @@ public class CategoryConverter {
         return model;
     }
 
-    public CategoryModel fillIdObjectes(CategoryModel model) {
+    public void fillIdObjects(CategoryModel model) {
         model.setParents(
                 model.getParentsId()
                         .stream()
@@ -55,8 +55,6 @@ public class CategoryConverter {
                 .stream()
                 .map(parentId -> categoryRepository.findById(parentId).orElseThrow())
                 .forEach(parent -> parent.getParents().add(model));
-
-        return model;
     }
 
     public void updateModel(CategoryModel model, CategoryModel changesModel) {
