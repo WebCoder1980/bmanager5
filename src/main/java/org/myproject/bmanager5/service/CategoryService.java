@@ -13,7 +13,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -47,27 +46,11 @@ public class CategoryService {
     public CategoryDTO update(@NotNull Long id, CategoryDTO dto) {
         CategoryModel model = categoryRepository.findById(id).orElseThrow();
 
-        if (dto.getName() != null) {
-            model.setName(dto.getName());
-        }
-        if (dto.getParentsId() != null) {
-            model.setParents(
-                    dto.getParentsId()
-                            .stream()
-                            .map(i -> categoryRepository.findById(i).orElseThrow())
-                            .collect(Collectors.toSet())
-            );
-        }
-        if (dto.getChildrenId() != null) {
-            model.setChildren(
-                    dto.getChildrenId()
-                            .stream()
-                            .map(i -> categoryRepository.findById(i).orElseThrow())
-                            .collect(Collectors.toSet())
-            );
-        }
+        categoryConverter.enrichModel(model, dto);
 
         categoryRepository.save(model);
+
+        model = categoryRepository.findById(id).orElseThrow();
 
         return categoryConverter.modelToDTO(model);
     }
