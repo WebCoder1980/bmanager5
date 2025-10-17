@@ -4,43 +4,52 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.myproject.bmanager5.dto.request.SearchRequest;
 import org.myproject.bmanager5.dto.response.AppResponse;
-import org.myproject.bmanager5.model.CategoryModel;
-import org.myproject.bmanager5.service.CategoryService;
+import org.myproject.bmanager5.service.GatewayService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/content/category")
+@RequestMapping("/content/{entity}")
 @AllArgsConstructor
 public class CategoryController {
-    private final CategoryService categoryService;
+    private final GatewayService gatewayService;
 
     @PostMapping("/search")
-    public ResponseEntity<AppResponse<List<CategoryModel>>> search(@RequestBody SearchRequest body) {
+    public ResponseEntity<AppResponse<List<Object>>> search(
+            @PathVariable String entity,
+            @RequestBody SearchRequest body
+    ) {
         return ResponseEntity.ok()
-                .body(new AppResponse<>(categoryService.search(body)));
+                .body(new AppResponse<>(gatewayService.search(entity, body)));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AppResponse<CategoryModel>> get(@PathVariable @NotNull Long id) {
+    public ResponseEntity<AppResponse<Object>> get(
+            @PathVariable String entity,
+            @PathVariable @NotNull Long id
+    ) {
         return ResponseEntity.ok()
-                .body(new AppResponse<>(categoryService.get(id)));
+                .body(new AppResponse<>(gatewayService.get(entity, id)));
     }
 
     @PostMapping
-    public ResponseEntity<AppResponse<CategoryModel>> create(@RequestBody CategoryModel request) {
+    public ResponseEntity<AppResponse<Object>> create(
+            @PathVariable String entity,
+            @RequestBody Object request
+    ) {
         return ResponseEntity.ok()
-                .body(new AppResponse<>(categoryService.create(request)));
+                .body(new AppResponse<>(gatewayService.create(entity, request)));
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<AppResponse<CategoryModel>> update(
+    public ResponseEntity<AppResponse<Object>> update(
+            @PathVariable String entity,
             @PathVariable @NotNull Long id,
-            @RequestBody CategoryModel request
+            @RequestBody Object request
     ) {
         return ResponseEntity.ok()
-                .body(new AppResponse<>(categoryService.update(id, request)));
+                .body(new AppResponse<>(gatewayService.update(entity, id, request)));
     }
 }

@@ -15,11 +15,12 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class CategoryService {
+public class CategoryService implements ServiceInterface {
     private final CategoryRepository categoryRepository;
     private final CategoryConverter categoryConverter;
     private final SearchRequestConverter searchRequestConverter;
 
+    @Override
     public List<CategoryModel> search(SearchRequest request) {
         Pageable pageable = searchRequestConverter.getPageable(request);
         Specification<CategoryModel> specification = searchRequestConverter.getSpecification(request);
@@ -33,12 +34,14 @@ public class CategoryService {
         return result;
     }
 
+    @Override
     public CategoryModel get(@NotNull Long id) {
         return categoryConverter.fillIdIndexes(
                 categoryRepository.findById(id).orElseThrow()
         );
     }
 
+    @Override
     public CategoryModel create(CategoryModel source) {
         categoryConverter.fillIdObjects(source);
 
@@ -51,6 +54,7 @@ public class CategoryService {
         return source;
     }
 
+    @Override
     public CategoryModel update(@NotNull Long id, CategoryModel source) {
         CategoryModel model = categoryRepository.findById(id).orElseThrow();
 
