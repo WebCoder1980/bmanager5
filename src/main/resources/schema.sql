@@ -1,0 +1,16 @@
+CREATE TABLE IF NOT EXISTS category (
+    id BIGSERIAL PRIMARY KEY,
+    "name" varchar(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS sleep (
+    id BIGSERIAL PRIMARY KEY,
+    start_dt TIMESTAMP WITHOUT TIME ZONE,
+    end_dt TIMESTAMP WITHOUT TIME ZONE
+);
+
+CREATE TABLE IF NOT EXISTS category_hierarchy (
+    parent_id BIGSERIAL REFERENCES category(id) NOT NULL,
+    child_id BIGSERIAL REFERENCES category(id) NOT NULL,
+    CONSTRAINT category_hierarchy_pkey PRIMARY KEY (child_id, parent_id)
+);
