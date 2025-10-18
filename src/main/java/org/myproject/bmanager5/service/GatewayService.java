@@ -3,6 +3,7 @@ package org.myproject.bmanager5.service;
 import jakarta.validation.constraints.NotNull;
 import org.myproject.bmanager5.dto.request.SearchRequest;
 import org.myproject.bmanager5.model.CategoryModel;
+import org.myproject.bmanager5.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,7 @@ import java.util.Map;
 @Service
 public class GatewayService {
     private final Map<String, ServiceInterface> services;
-    private final CommonService commonService;
+    private final CommonService<CategoryModel, CategoryRepository> commonService;
 
     @Autowired
     public GatewayService(CommonService commonService) {

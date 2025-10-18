@@ -1,11 +1,12 @@
 package org.myproject.bmanager5.repository;
 
-import org.myproject.bmanager5.model.CategoryModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.repository.NoRepositoryBean;
 
-public interface CommonRepository
-        extends JpaRepository<CategoryModel, Long>,
-        JpaSpecificationExecutor<CategoryModel> {
+@NoRepositoryBean
+public interface CommonRepository<T>
+        extends JpaRepository<T, Long>,
+        JpaSpecificationExecutor<T> {
 
 }

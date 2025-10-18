@@ -2,7 +2,7 @@ package org.myproject.bmanager5.service;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import org.myproject.bmanager5.converter.CommonConverter;
+import org.myproject.bmanager5.converter.CategoryConverter;
 import org.myproject.bmanager5.converter.SearchRequestConverter;
 import org.myproject.bmanager5.dto.request.SearchRequest;
 import org.myproject.bmanager5.model.CategoryModel;
@@ -15,58 +15,64 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class CommonService implements ServiceInterface {
-    private final CommonRepository commonRepository;
-    private final CommonConverter commonConverter;
+public class CommonService<
+        T extends CategoryModel,
+        TR extends CommonRepository<T>
+> implements ServiceInterface<T> {
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    private final TR categoryRepository;
+    private final CategoryConverter<T> categoryConverter;
     private final SearchRequestConverter searchRequestConverter;
 
     @Override
-    public List<CategoryModel> search(SearchRequest request) {
+    public List<T> search(SearchRequest request) {
         Pageable pageable = searchRequestConverter.getPageable(request);
-        Specification<CategoryModel> specification = searchRequestConverter.getSpecification(request);
+        Specification<T> specification = searchRequestConverter.getSpecification(request);
 
-        List<CategoryModel> result = commonRepository.findAll(specification, pageable).getContent();
+        List<T> result = categoryRepository.findAll(specification, pageable)
+                .getContent();
 
         result = result.stream()
-                .map(commonConverter::fillIdIndexes)
+                .map(categoryConverter::fillIdIndexes)
+                .map(i -> (T) i)
                 .toList();
 
         return result;
     }
 
     @Override
-    public CategoryModel get(@NotNull Long id) {
-        return commonConverter.fillIdIndexes(
-                commonRepository.findById(id).orElseThrow()
+    public T get(@NotNull Long id) {
+        return (T) categoryConverter.fillIdIndexes(
+                categoryRepository.findById(id).orElseThrow()
         );
     }
 
     @Override
-    public CategoryModel create(CategoryModel source) {
-        commonConverter.fillIdObjects(source);
+    public T create(T source) {
+        categoryConverter.fillIdObjects(source);
 
-        commonRepository.save(source);
+        categoryRepository.save(source);
 
-        source = commonRepository.findById(source.getId()).orElseThrow();
+        source = categoryRepository.findById((source).getId()).orElseThrow();
 
-        commonConverter.fillIdIndexes(source);
+        categoryConverter.fillIdIndexes(source);
 
         return source;
     }
 
     @Override
-    public CategoryModel update(@NotNull Long id, CategoryModel source) {
-        CategoryModel model = commonRepository.findById(id).orElseThrow();
+    public T update(@NotNull Long id, T source) {
+        T model = categoryRepository.findById(id).orElseThrow();
 
-        commonConverter.updateModel(model, source);
+        categoryConverter.updateModel(model, source);
 
-        commonConverter.fillIdObjects(model);
+        categoryConverter.fillIdObjects(model);
 
-        commonRepository.save(model);
+        categoryRepository.save(model);
 
-        model = commonRepository.findById(id).orElseThrow();
+        model = categoryRepository.findById(id).orElseThrow();
 
-        commonConverter.fillIdIndexes(model);
+        categoryConverter.fillIdIndexes(model);
 
         return model;
     }
