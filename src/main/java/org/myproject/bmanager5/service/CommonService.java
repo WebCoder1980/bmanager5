@@ -2,11 +2,11 @@ package org.myproject.bmanager5.service;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import org.myproject.bmanager5.converter.CategoryConverter;
+import org.myproject.bmanager5.converter.CommonConverter;
 import org.myproject.bmanager5.converter.SearchRequestConverter;
 import org.myproject.bmanager5.dto.request.SearchRequest;
 import org.myproject.bmanager5.model.CategoryModel;
-import org.myproject.bmanager5.repository.CategoryRepository;
+import org.myproject.bmanager5.repository.CommonRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -15,9 +15,9 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class CategoryService implements ServiceInterface {
-    private final CategoryRepository categoryRepository;
-    private final CategoryConverter categoryConverter;
+public class CommonService implements ServiceInterface {
+    private final CommonRepository commonRepository;
+    private final CommonConverter commonConverter;
     private final SearchRequestConverter searchRequestConverter;
 
     @Override
@@ -25,10 +25,10 @@ public class CategoryService implements ServiceInterface {
         Pageable pageable = searchRequestConverter.getPageable(request);
         Specification<CategoryModel> specification = searchRequestConverter.getSpecification(request);
 
-        List<CategoryModel> result = categoryRepository.findAll(specification, pageable).getContent();
+        List<CategoryModel> result = commonRepository.findAll(specification, pageable).getContent();
 
         result = result.stream()
-                .map(categoryConverter::fillIdIndexes)
+                .map(commonConverter::fillIdIndexes)
                 .toList();
 
         return result;
@@ -36,37 +36,37 @@ public class CategoryService implements ServiceInterface {
 
     @Override
     public CategoryModel get(@NotNull Long id) {
-        return categoryConverter.fillIdIndexes(
-                categoryRepository.findById(id).orElseThrow()
+        return commonConverter.fillIdIndexes(
+                commonRepository.findById(id).orElseThrow()
         );
     }
 
     @Override
     public CategoryModel create(CategoryModel source) {
-        categoryConverter.fillIdObjects(source);
+        commonConverter.fillIdObjects(source);
 
-        categoryRepository.save(source);
+        commonRepository.save(source);
 
-        source = categoryRepository.findById(source.getId()).orElseThrow();
+        source = commonRepository.findById(source.getId()).orElseThrow();
 
-        categoryConverter.fillIdIndexes(source);
+        commonConverter.fillIdIndexes(source);
 
         return source;
     }
 
     @Override
     public CategoryModel update(@NotNull Long id, CategoryModel source) {
-        CategoryModel model = categoryRepository.findById(id).orElseThrow();
+        CategoryModel model = commonRepository.findById(id).orElseThrow();
 
-        categoryConverter.updateModel(model, source);
+        commonConverter.updateModel(model, source);
 
-        categoryConverter.fillIdObjects(model);
+        commonConverter.fillIdObjects(model);
 
-        categoryRepository.save(model);
+        commonRepository.save(model);
 
-        model = categoryRepository.findById(id).orElseThrow();
+        model = commonRepository.findById(id).orElseThrow();
 
-        categoryConverter.fillIdIndexes(model);
+        commonConverter.fillIdIndexes(model);
 
         return model;
     }

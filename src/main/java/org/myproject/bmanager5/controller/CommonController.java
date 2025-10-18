@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/content/{entity}")
 @AllArgsConstructor
-public class CategoryController {
+public class CommonController {
     private final GatewayService gatewayService;
 
     @PostMapping("/search")

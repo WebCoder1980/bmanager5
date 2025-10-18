@@ -12,12 +12,15 @@ import java.util.Map;
 @Service
 public class GatewayService {
     private final Map<String, ServiceInterface> services;
+    private final CommonService commonService;
 
     @Autowired
-    public GatewayService(CategoryService categoryService) {
+    public GatewayService(CommonService commonService) {
         services = Map.of(
-                "category", categoryService
+
         );
+
+        this.commonService = commonService;
     }
 
     public List<Object> search(String entity, SearchRequest request) {
@@ -43,10 +46,7 @@ public class GatewayService {
         ServiceInterface result = services.getOrDefault(entity, null);
 
         if (result == null) {
-            throw new IllegalArgumentException(String.format(
-                    "Entity '%s' not supported",
-                    entity
-            ));
+            result = commonService;
         }
         return result;
     }

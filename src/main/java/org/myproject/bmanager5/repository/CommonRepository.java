@@ -4,7 +4,7 @@ import org.myproject.bmanager5.model.CategoryModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface CategoryRepository
+public interface CommonRepository
         extends JpaRepository<CategoryModel, Long>,
         JpaSpecificationExecutor<CategoryModel> {
 
