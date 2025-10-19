@@ -14,11 +14,11 @@ import java.util.stream.Stream;
 
 @Component
 @AllArgsConstructor
-public class CategoryConverter<T extends CategoryModel> {
+public class CategoryConverter<T extends CategoryModel, TR extends CommonRepository<T>> {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    private final CommonRepository<T> categoryRepository;
+    private final TR categoryRepository;
 
-    public CategoryModel fillIdIndexes(CategoryModel model) {
+    public CategoryModel fillIdIndexes(T model) {
         final String ID_SUFFIX = "Id";
 
         List<Field> allFields = Stream.of(model.getClass().getDeclaredFields())

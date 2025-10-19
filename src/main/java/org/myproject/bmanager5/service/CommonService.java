@@ -21,7 +21,7 @@ public class CommonService<
 > implements ServiceInterface<T> {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private final TR categoryRepository;
-    private final CategoryConverter<T> categoryConverter;
+    private final CategoryConverter<T, TR> categoryConverter;
     private final SearchRequestConverter searchRequestConverter;
 
     @Override
