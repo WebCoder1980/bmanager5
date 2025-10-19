@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.myproject.bmanager5.model.CategoryModel;
 import org.myproject.bmanager5.model.ModelInterface;
 import org.myproject.bmanager5.repository.CommonRepository;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -18,6 +19,7 @@ import java.util.stream.Stream;
 public class CommonConverter<T extends ModelInterface, TR extends CommonRepository<T>> {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private final TR categoryRepository;
+    private final ApplicationContext applicationContext;
 
     public T fillIdIndexes(T model) {
         final String ID_SUFFIX = "Id";
@@ -124,5 +126,13 @@ public class CommonConverter<T extends ModelInterface, TR extends CommonReposito
             child.getParents().remove(model);
         }
         model.getChildren().clear();
+    }
+
+    private CommonRepository<? extends ModelInterface> getRepository(Class<? extends ModelInterface> modelClass) {
+        String repoName = modelClass.getSimpleName().replace("Model", "") + "Repository";
+        repoName = Character.toLowerCase(repoName.charAt(0)) + repoName.substring(1);
+
+        //noinspection unchecked
+        return (CommonRepository<? extends ModelInterface>) applicationContext.getBean(repoName);
     }
 }
