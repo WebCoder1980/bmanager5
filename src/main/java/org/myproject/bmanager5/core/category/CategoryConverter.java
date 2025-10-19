@@ -35,7 +35,7 @@ public class CategoryConverter {
 
     @Transactional
     public void fillIdObjects(CategoryModel model) {
-        categoryHierarchyRepository.deleteByParentId(model.getId());
+        categoryHierarchyRepository.deleteByChildId(model.getId());
 
         categoryHierarchyRepository.saveAll(
                 model.getParentsId()
@@ -51,7 +51,7 @@ public class CategoryConverter {
                         .toList()
         );
 
-        categoryHierarchyRepository.deleteByChildId(model.getId());
+        categoryHierarchyRepository.deleteByParentId(model.getId());
 
         categoryHierarchyRepository.saveAll(
                 model.getChildrenId()
