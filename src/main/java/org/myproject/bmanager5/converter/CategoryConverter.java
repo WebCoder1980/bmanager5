@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 @AllArgsConstructor
@@ -18,46 +19,53 @@ public class CategoryConverter<T extends CategoryModel> {
     private final CommonRepository<T> categoryRepository;
 
     public CategoryModel fillIdIndexes(CategoryModel model) {
-        List<Field> allFields = List.of(model.getClass().getDeclaredFields()).stream()
+        final String ID_SUFFIX = "Id";
+
+        List<Field> allFields = Stream.of(model.getClass().getDeclaredFields())
                 .peek(i -> i.setAccessible(true))
                 .toList();
 
         List<Field> indexFields = allFields.stream()
                 .filter(i -> i.getName().endsWith("Id"))
                 .toList();
-        final String ID_SUFFIX = "Id";
+
         Set<String> fieldsNames = indexFields.stream()
                 .map(Field::getName)
                 .collect(Collectors.toSet());
 
-        allFields.stream()
-                .filter(i -> fieldsNames.contains(i.getName()))
-                .forEach(i -> {
-                    try {
-                        i.set(
-                                model,
-                                allFields.stream()
-                                        .filter(j -> j.getName().equals(i.getName().substring(0, i.getName().length() - ID_SUFFIX.length())))
-                                        .findFirst()
-                                        .map(j -> {
-                                            Set<Long> ids;
-                                            try {
-                                                ids = ((Set<T>) j.get(model))
-                                                        .stream()
-                                                        .map(T::getId)
-                                                        .collect(Collectors.toSet());
+        for (var fieldTo : allFields) {
+            if (!fieldsNames.contains(fieldTo.getName())) {
+                continue;
+            }
 
-                                            } catch (Exception e) {
-                                                throw new RuntimeException(e);
-                                            }
-                                            return ids;
-                                        })
-                                        .orElseThrow()
-                        );
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+            Field fieldFrom = null;
+
+            for (var i : allFields) {
+                final String fieldFromName = i.getName();
+                final String fieldToName = fieldTo.getName().substring(0, fieldTo.getName().length() - ID_SUFFIX.length());
+
+                if (fieldFromName.equals(fieldToName)) {
+                    fieldFrom = i;
+                    break;
+                }
+            }
+
+            if (fieldFrom == null) {
+                throw new RuntimeException(String.format("Field %s not found", fieldTo.getName()));
+            }
+
+            try {
+                //noinspection unchecked
+                Set<Long> idsSet = ((Set<T>) fieldFrom.get(model))
+                        .stream()
+                        .map(T::getId)
+                        .collect(Collectors.toSet());
+
+                fieldTo.set(model, idsSet);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         return model;
     }
