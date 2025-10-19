@@ -41,13 +41,6 @@ public class CategoryModel implements ModelInterface {
     @EqualsAndHashCode.Exclude
     protected Set<CategoryModel> children = new HashSet<>();
 
-    public void clearChildren() {
-        for (CategoryModel child : getChildren()) {
-            child.getParents().remove(this);
-        }
-        getChildren().clear();
-    }
-
     // For Rest API
 
     @Transient

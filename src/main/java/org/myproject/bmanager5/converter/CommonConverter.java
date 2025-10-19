@@ -82,9 +82,9 @@ public class CommonConverter<T extends ModelInterface, TR extends CommonReposito
         model.getChildrenId()
                 .stream()
                 .map(parentId -> (CategoryModel) categoryRepository.findById(parentId).orElseThrow())
-        .forEach(CategoryModel::clearChildren);
+        .forEach(this::clearChildren);
 
-        model.clearChildren();
+        clearChildren(model);
 
         model.getChildrenId()
                 .stream()
@@ -117,5 +117,12 @@ public class CommonConverter<T extends ModelInterface, TR extends CommonReposito
                     changesModel.getChildrenId()
             );
         }
+    }
+
+    private void clearChildren(CategoryModel model) {
+        for (CategoryModel child : model.getChildren()) {
+            child.getParents().remove(model);
+        }
+        model.getChildren().clear();
     }
 }
