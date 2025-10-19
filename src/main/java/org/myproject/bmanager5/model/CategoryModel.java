@@ -18,7 +18,7 @@ import static jakarta.persistence.CascadeType.ALL;
 @NoArgsConstructor
 @Accessors(chain = true)
 @SuperBuilder
-public class CategoryModel implements ModelInterface {
+public class CategoryModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
@@ -40,6 +40,13 @@ public class CategoryModel implements ModelInterface {
     @JsonIgnore
     @EqualsAndHashCode.Exclude
     protected Set<CategoryModel> children = new HashSet<>();
+
+    public void clearChildren() {
+        for (CategoryModel child : getChildren()) {
+            child.getParents().remove(this);
+        }
+        getChildren().clear();
+    }
 
     // For Rest API
 

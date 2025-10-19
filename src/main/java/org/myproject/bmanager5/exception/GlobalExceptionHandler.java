@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handle(Exception ex) {
-        logger.warn("Bad request:", ex);
+        logger.warn("Bad request: {}", ex.getMessage());
 
         return ResponseEntity.badRequest().body(new AppResponse<>().addErrorFluent(ex.getMessage()));
     }
