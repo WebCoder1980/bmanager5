@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
+import org.myproject.bmanager5.core.categoryhierarchy.CategoryHierarchyModel;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,27 +27,15 @@ public class CategoryModel {
     @Column(nullable = false)
     protected String name;
 
-    @ManyToMany(cascade = ALL)
-    @JoinTable(
-            name = "category_hierarchy",
-            joinColumns = @JoinColumn(name = "child_id"),
-            inverseJoinColumns = @JoinColumn(name = "parent_id")
-    )
+    @OneToMany(mappedBy = "child", cascade = ALL)
     @JsonIgnore
     @EqualsAndHashCode.Exclude
-    protected Set<CategoryModel> parents = new HashSet<>();
+    protected Set<CategoryHierarchyModel> parents = new HashSet<>();
 
-    @ManyToMany(mappedBy = "parents", cascade = ALL)
+    @OneToMany(mappedBy = "parent", cascade = ALL)
     @JsonIgnore
     @EqualsAndHashCode.Exclude
-    protected Set<CategoryModel> children = new HashSet<>();
-
-    public void clearChildren() {
-        for (CategoryModel child : getChildren()) {
-            child.getParents().remove(this);
-        }
-        getChildren().clear();
-    }
+    protected Set<CategoryHierarchyModel> children = new HashSet<>();
 
     // For Rest API
 

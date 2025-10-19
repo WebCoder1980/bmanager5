@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS sleep (
 );
 
 CREATE TABLE IF NOT EXISTS category_hierarchy (
+    id BIGSERIAL PRIMARY KEY,
     parent_id BIGSERIAL REFERENCES category(id) NOT NULL,
-    child_id BIGSERIAL REFERENCES category(id) NOT NULL,
-    CONSTRAINT category_hierarchy_pkey PRIMARY KEY (child_id, parent_id)
+    child_id BIGSERIAL REFERENCES category(id) NOT NULL
 );

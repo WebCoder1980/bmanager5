@@ -1,7 +1,10 @@
 package org.myproject.bmanager5.core.category;
 
 import lombok.AllArgsConstructor;
+import org.myproject.bmanager5.core.categoryhierarchy.CategoryHierarchyModel;
+import org.myproject.bmanager5.core.categoryhierarchy.CategoryHierarchyRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.stream.Collectors;
@@ -10,49 +13,59 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CategoryConverter {
     private final CategoryRepository categoryRepository;
+    private final CategoryHierarchyRepository categoryHierarchyRepository;
 
     public CategoryModel fillIdIndexes(CategoryModel model) {
         model.setParentsId(
                 model.getParents()
                         .stream()
-                        .map(CategoryModel::getId)
+                        .map(i -> i.getParent().getId())
                         .collect(Collectors.toSet())
         );
 
         model.setChildrenId(
                 model.getChildren()
                         .stream()
-                        .map(CategoryModel::getId)
+                        .map(i -> i.getChild().getId())
                         .collect(Collectors.toSet())
         );
 
         return model;
     }
 
+    @Transactional
     public void fillIdObjects(CategoryModel model) {
-        model.setParents(
+        categoryHierarchyRepository.deleteByParentId(model.getId());
+
+        categoryHierarchyRepository.saveAll(
                 model.getParentsId()
                         .stream()
-                        .map(childId -> categoryRepository.findById(childId).orElseThrow())
-                        .collect(Collectors.toSet())
+                        .map(i -> {
+                            return CategoryHierarchyModel.builder()
+                                    .parent(
+                                            categoryRepository.findById(i).orElseThrow()
+                                    )
+                                    .child(model)
+                                    .build();
+                        })
+                        .toList()
         );
 
-        model.getChildrenId()
-                .stream()
-                .map(parentId -> categoryRepository.findById(parentId).orElseThrow())
-        .forEach(CategoryModel::clearChildren);
+        categoryHierarchyRepository.deleteByChildId(model.getId());
 
-        model.clearChildren();
-
-        model.getChildrenId()
-                .stream()
-                .map(parentId -> categoryRepository.findById(parentId).orElseThrow())
-                .forEach(parent -> model.getChildren().add(parent));
-
-        model.getChildrenId()
-                .stream()
-                .map(parentId -> categoryRepository.findById(parentId).orElseThrow())
-                .forEach(parent -> parent.getParents().add(model));
+        categoryHierarchyRepository.saveAll(
+                model.getChildrenId()
+                        .stream()
+                        .map(i -> {
+                            return CategoryHierarchyModel.builder()
+                                    .parent(model)
+                                    .child(
+                                            categoryRepository.findById(i).orElseThrow()
+                                    )
+                                    .build();
+                        })
+                        .toList()
+        );
     }
 
     public void updateModel(CategoryModel model, CategoryModel changesModel) {
