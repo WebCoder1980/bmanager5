@@ -2,6 +2,7 @@ package org.myproject.bmanager5.converter;
 
 import lombok.AllArgsConstructor;
 import org.myproject.bmanager5.model.CategoryModel;
+import org.myproject.bmanager5.model.ModelInterface;
 import org.myproject.bmanager5.repository.CommonRepository;
 import org.springframework.stereotype.Component;
 
@@ -14,11 +15,11 @@ import java.util.stream.Stream;
 
 @Component
 @AllArgsConstructor
-public class CategoryConverter<T extends CategoryModel, TR extends CommonRepository<T>> {
+public class CommonConverter<T extends ModelInterface, TR extends CommonRepository<T>> {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private final TR categoryRepository;
 
-    public CategoryModel fillIdIndexes(T model) {
+    public T fillIdIndexes(T model) {
         final String ID_SUFFIX = "Id";
 
         List<Field> allFields = Stream.of(model.getClass().getDeclaredFields())

@@ -18,7 +18,7 @@ import static jakarta.persistence.CascadeType.ALL;
 @NoArgsConstructor
 @Accessors(chain = true)
 @SuperBuilder
-public class CategoryModel {
+public class CategoryModel implements ModelInterface {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
