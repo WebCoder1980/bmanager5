@@ -1,7 +1,7 @@
 package org.myproject.bmanager5.core.sleep;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.myproject.bmanager5.core.common.CommonRepository;
 
-public interface SleepRepository extends JpaRepository<SleepModel, Long> {
+public interface SleepRepository extends CommonRepository<SleepModel> {
 
 }
