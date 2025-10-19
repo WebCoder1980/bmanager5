@@ -1,4 +1,4 @@
-package org.myproject.bmanager5.model;
+package org.myproject.bmanager5.core.category;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

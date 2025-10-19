@@ -1,12 +1,9 @@
-package org.myproject.bmanager5.service;
+package org.myproject.bmanager5.core.category;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import org.myproject.bmanager5.converter.CategoryConverter;
 import org.myproject.bmanager5.converter.SearchRequestConverter;
 import org.myproject.bmanager5.dto.request.SearchRequest;
-import org.myproject.bmanager5.model.CategoryModel;
-import org.myproject.bmanager5.repository.CategoryRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;

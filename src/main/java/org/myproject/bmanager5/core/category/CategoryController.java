@@ -1,11 +1,9 @@
-package org.myproject.bmanager5.controller;
+package org.myproject.bmanager5.core.category;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.myproject.bmanager5.dto.request.SearchRequest;
 import org.myproject.bmanager5.dto.response.AppResponse;
-import org.myproject.bmanager5.model.CategoryModel;
-import org.myproject.bmanager5.service.CategoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

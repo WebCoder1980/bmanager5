@@ -1,7 +1,6 @@
-package org.myproject.bmanager5.repository;
+package org.myproject.bmanager5.core.category;
 
 import jakarta.annotation.Nonnull;
-import org.myproject.bmanager5.model.CategoryModel;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;

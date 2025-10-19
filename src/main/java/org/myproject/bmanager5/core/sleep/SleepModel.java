@@ -1,4 +1,4 @@
-package org.myproject.bmanager5.model;
+package org.myproject.bmanager5.core.sleep;
 
 import jakarta.persistence.*;
 import lombok.Data;

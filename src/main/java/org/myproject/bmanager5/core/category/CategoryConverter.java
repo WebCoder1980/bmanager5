@@ -1,8 +1,6 @@
-package org.myproject.bmanager5.converter;
+package org.myproject.bmanager5.core.category;
 
 import lombok.AllArgsConstructor;
-import org.myproject.bmanager5.model.CategoryModel;
-import org.myproject.bmanager5.repository.CategoryRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
