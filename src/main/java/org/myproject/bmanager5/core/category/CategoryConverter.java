@@ -16,56 +16,60 @@ public class CategoryConverter {
     private final CategoryHierarchyRepository categoryHierarchyRepository;
 
     public CategoryModel fillIdIndexes(CategoryModel model) {
-        model.setParentsId(
-                model.getParents()
-                        .stream()
-                        .map(i -> i.getParent().getId())
-                        .collect(Collectors.toSet())
-        );
+        // parents
 
-        model.setChildrenId(
-                model.getChildren()
-                        .stream()
-                        .map(i -> i.getChild().getId())
-                        .collect(Collectors.toSet())
-        );
+        var parents = model.getParents()
+                .stream()
+                .map(i -> i.getParent().getId())
+                .collect(Collectors.toSet());
+
+        model.setParentsId(parents);
+
+        // children
+
+        var children = model.getChildren()
+                .stream()
+                .map(i -> i.getChild().getId())
+                .collect(Collectors.toSet());
+
+        model.setChildrenId(children);
+
+        // return
 
         return model;
     }
 
     @Transactional
-    public void fillIdObjects(CategoryModel model) {
-        categoryHierarchyRepository.deleteByChildId(model.getId());
+    public void fillIdObjectsAndSave(CategoryModel model) {
+        // delete all old models
 
-        categoryHierarchyRepository.saveAll(
-                model.getParentsId()
-                        .stream()
-                        .map(i -> {
-                            return CategoryHierarchyModel.builder()
-                                    .parent(
-                                            categoryRepository.findById(i).orElseThrow()
-                                    )
-                                    .child(model)
-                                    .build();
-                        })
-                        .toList()
-        );
+        categoryHierarchyRepository.deleteByParentIdOrChildId(model.getId(), model.getId());
 
-        categoryHierarchyRepository.deleteByParentId(model.getId());
+        // parents
 
-        categoryHierarchyRepository.saveAll(
-                model.getChildrenId()
-                        .stream()
-                        .map(i -> {
-                            return CategoryHierarchyModel.builder()
-                                    .parent(model)
-                                    .child(
-                                            categoryRepository.findById(i).orElseThrow()
-                                    )
-                                    .build();
-                        })
-                        .toList()
-        );
+        for (Long i : model.getParentsId()) {
+            var newModel = CategoryHierarchyModel.builder()
+                    .parent(
+                            categoryRepository.findById(i).orElseThrow()
+                    )
+                    .child(model)
+                    .build();
+
+            categoryHierarchyRepository.save(newModel);
+        }
+
+        // children
+
+        for (Long i : model.getChildrenId()) {
+            var newModel = CategoryHierarchyModel.builder()
+                    .parent(model)
+                    .child(
+                            categoryRepository.findById(i).orElseThrow()
+                    )
+                    .build();
+
+            categoryHierarchyRepository.save(newModel);
+        }
     }
 
     public void updateModel(CategoryModel model, CategoryModel changesModel) {

@@ -37,7 +37,7 @@ public class CategoryService {
     }
 
     public CategoryModel create(CategoryModel source) {
-        categoryConverter.fillIdObjects(source);
+        categoryConverter.fillIdObjectsAndSave(source);
 
         categoryRepository.save(source);
 
@@ -53,7 +53,7 @@ public class CategoryService {
 
         categoryConverter.updateModel(model, source);
 
-        categoryConverter.fillIdObjects(model);
+        categoryConverter.fillIdObjectsAndSave(model);
 
         categoryRepository.save(model);
 
