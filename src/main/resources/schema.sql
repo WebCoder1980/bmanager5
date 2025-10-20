@@ -1,3 +1,5 @@
+-- tables
+
 CREATE TABLE IF NOT EXISTS category (
     id BIGSERIAL PRIMARY KEY,
     "name" varchar(255) NOT NULL
@@ -11,6 +13,12 @@ CREATE TABLE IF NOT EXISTS sleep (
 
 CREATE TABLE IF NOT EXISTS category_hierarchy (
     id BIGSERIAL PRIMARY KEY,
-    parent_id BIGSERIAL REFERENCES category(id) NOT NULL,
-    child_id BIGSERIAL REFERENCES category(id) NOT NULL
+    parent_id BIGSERIAL REFERENCES category(id) ON DELETE CASCADE NOT NULL,
+    child_id BIGSERIAL REFERENCES category(id) ON DELETE CASCADE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS category_hierarchy_recursive(
+    id BIGSERIAL PRIMARY KEY,
+    parent_id BIGINT REFERENCES category(id) ON DELETE CASCADE,
+    child_id BIGINT REFERENCES category(id) ON DELETE CASCADE NOT NULL
 );
