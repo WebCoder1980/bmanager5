@@ -1,8 +1,8 @@
 package org.myproject.bmanager5.core.category;
 
-import lombok.AllArgsConstructor;
 import org.myproject.bmanager5.core.categoryhierarchy.CategoryHierarchyModel;
 import org.myproject.bmanager5.core.categoryhierarchy.CategoryHierarchyRepository;
+import org.myproject.bmanager5.core.common.AbstractConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,10 +10,14 @@ import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @Component
-@AllArgsConstructor
-public class CategoryConverter {
-    private final CategoryRepository categoryRepository;
-    private final CategoryHierarchyRepository categoryHierarchyRepository;
+public class CategoryConverter extends AbstractConverter<
+        CategoryModel,
+        CategoryRepository
+> {
+
+    public CategoryConverter(CategoryRepository categoryRepository, CategoryHierarchyRepository categoryHierarchyRepository) {
+        super(categoryRepository, categoryHierarchyRepository);
+    }
 
     public CategoryModel fillIdIndexes(CategoryModel model) {
         // parents
