@@ -52,3 +52,9 @@ CREATE TRIGGER trg_category_hierarchy_refresh
     ON category_hierarchy
     FOR EACH STATEMENT
 EXECUTE FUNCTION category_trigger_function();
+
+-- indexes
+
+CREATE INDEX idx_category_hierarchy ON category_hierarchy (parent_id, child_id);
+
+CREATE INDEX idx_category_hierarchy_recursive ON category_hierarchy_recursive (parent_id, child_id);
