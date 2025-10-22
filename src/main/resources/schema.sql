@@ -12,13 +12,20 @@ CREATE TABLE IF NOT EXISTS sleep (
 );
 
 CREATE TABLE IF NOT EXISTS category_hierarchy (
-    id BIGSERIAL PRIMARY KEY,
     parent_id BIGSERIAL REFERENCES category(id) ON DELETE CASCADE NOT NULL,
-    child_id BIGSERIAL REFERENCES category(id) ON DELETE CASCADE NOT NULL
+    child_id BIGSERIAL REFERENCES category(id) ON DELETE CASCADE NOT NULL,
+    PRIMARY KEY (parent_id, child_id)
 );
 
 CREATE TABLE IF NOT EXISTS category_hierarchy_recursive(
+    parent_id BIGINT REFERENCES category(id) ON DELETE CASCADE NOT NULL,
+    child_id BIGINT REFERENCES category(id) ON DELETE CASCADE NOT NULL,
+    PRIMARY KEY (parent_id, child_id)
+);
+
+CREATE TABLE IF NOT EXISTS my_time(
     id BIGSERIAL PRIMARY KEY,
-    parent_id BIGINT REFERENCES category(id) ON DELETE CASCADE,
-    child_id BIGINT REFERENCES category(id) ON DELETE CASCADE NOT NULL
+    name TEXT NOT NULL,
+    start_dt TIMESTAMP WITH TIME ZONE,
+    end_dt TIMESTAMP WITH TIME ZONE
 );

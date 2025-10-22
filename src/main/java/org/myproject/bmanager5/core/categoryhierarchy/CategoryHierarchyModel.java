@@ -13,15 +13,16 @@ import org.myproject.bmanager5.core.category.CategoryModel;
 @Accessors(chain = true)
 @SuperBuilder
 public class CategoryHierarchyModel {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
+    @EmbeddedId
+    protected CategoryHierarchyEmbeddedId id;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
+    @MapsId("parentId")
     protected CategoryModel parent;
 
     @ManyToOne
     @JoinColumn(name = "child_id")
+    @MapsId("childId")
     protected CategoryModel child;
 }
